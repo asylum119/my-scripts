@@ -1,0 +1,294 @@
+Dynamic Wi-Fi Honeypot 4RPI3+
+
+Project:    Dynamic Wi-Fi Honeypot For the Raspberry PI 3 to create a single Wi-Fi access point that dynamically updates the broadcast name on connection attempt and escalates that response + logging for persistent devices that try to connect.
+
+Not too much involved here as we just need to install dnsmasq to output mac addresses to the sysylog and then install hostapd to look after broadcasting the access point, only a few conf files need editing. The dynamic part is done with shell scripts and are commented fairly well.
+
+Designed for a RPI3 with onboard Wi-Fi but you could manually add RPI2 USB Dongle driver details in the script under hostapd, also being a POC the code could be improved, shortened and extended. VER is Alpha and I stopped short because I did not have 4 Wi-Fi Dongles to expand the honeypot.
+
+5 dynamically independently themed APs or 1 less AP for dedicated ssh and time would have been nice, maybe one day
+
+
+Requirements:	1 x RPI 3 (using the onboard Wi-Fi)
+				1 x RPI Power supply
+				1 x Sd Card
+				internet access to install aplications (LAN or Wi-Fi)
+				+ temporary monitor + keyboard and mouse (needed during the initial setup only)
+
+
+Skill Level:	Haz RPI3 + Can install Raspbian LITE onto SD Card + Can configure Keyboard using raspi-config
+
+
+
+
+#
+#	Download Raspbian LITE
+#
+
+# if you do not run GNU/Linux then you will need to manually download Raspbian LITE and set up your SD Card from whatever Operating System you are using and skip ahead in the documentation, this documentation was created using Linux MINT.
+
+Raspbian Stretch LITE manual download
+https://www.raspberrypi.org/downloads/raspbian/
+
+
+
+# from the terminal
+
+# change the working directory
+cd Desktop
+
+# download latest version of Raspbian LITE
+wget https://downloads.raspberrypi.org/raspbian_lite_latest
+
+
+#
+#	Decompress Raspbian LITE
+#
+
+# some distros may need to have 'zip' installed if not bundled by default
+unzip raspbian_lite_latest
+
+# Delete the zip file
+#	- if planning on keeping the Raspbian.zip you should skip this command
+rm raspbian_lite_latest
+
+# discover and copy the decompressed Rapbian LITE file name
+#  - the uncompressed file used date in the naming so each file name is unique
+ls
+
+
+#
+#	Copy Raspbiab LITE to SD Card
+#
+
+# discover and copy your Sd Cards device path
+sudo fdisk -l
+
+# replace the name of the decompressed image file by replacing if='xxxx-xx-xx' with the date of your Raspbian release
+# replace of=/dev/'xxx' with your SD Card destination path
+#	- use /'sda', /'sdb' etc rather than /sda1 or /sdb1 (drop the numbering as we do not want to flash a single partition)
+#	- double check path so you do not whipe an entire drive by accident
+
+sudo dd if=xxxx-xx-xx-raspbian-stretch-lite.img of=/dev/xxx bs=1M status=progress
+
+# this will take a while but when it is complete put the SD card into the raspberry and boot it up
+
+
+#
+#	Configuring Raspbian
+#
+
+# On first boot you will need to know the Raspbian pre set username and password
+Username:	pi
+Password:	raspberry
+
+# if using ethernet and not using Wi-Fi skip this next part
+
+# change the working directory to save some repadative typing
+cd /etc/wpa_wpa_supplicant
+
+# make a backup of the original config file
+sudo cp wpa_supplicant.conf wpa_supplicant.conf.orig
+
+# open the config file for editing
+sudo nano wpa_supplicant.conf
+
+# insert the following to connect to Wi-Fi
+#	- if your keyboard does not deal with special character well at this stage
+#	- run sudo raspi-config and edit keyboard under Localization Options (sysytem needs reboot after raspi-config crashes)
+#	- then come back to this point to continue
+
+ctrl_interface=DIR=var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+# Connection to Home Wi-Fi
+
+network={
+ssid="enter Wi-Fi Name Here"
+# scan_ssid=1					# remove the '#' from the start of this line if Wi-Fi is hidden only
+psk"enter Wi-Fi Password Here"
+key_mgmt=WPA-PSK				# this assumes you are using WPA2 Wi-Fi security
+}
+
+# hit control + x to save and exit
+
+# reboot
+sudo reboot
+
+# open up the raspbian configuration
+sudo raspi-config
+
+RASPI-CONFIG
+	- Change user password
+		- anything you want
+	- Boot Options
+		- Desktop / CLI
+			- Console Autologin
+	- Overclock
+		- Set to High
+	- Update
+	- Localization Options (if not already done)
+		- set keyboard to suit
+
+# reboot
+sudo reboot
+
+
+#
+#	Update The System
+#
+
+# update the package list
+sudo apt-get update
+
+# upgrade the installed packages
+sudo apt-get upgrade -y
+
+# upgrade the firmware
+sudo raspi-update
+
+# reboot the system
+sudo reboot
+
+
+#
+#	Install Needed Packages
+#
+
+# Install the needed packages
+
+# install hostapd to support Access Point Broadcast
+sudo apt-get install hostapd
+
+# install dnsmasq to output mac addresses to the syslog
+sudo apt-get install dnsmasq
+
+
+#
+#	Setup The Access Point
+#
+
+# configure hostaps
+sudo nano /etc/default/hostapd
+
+# find
+#DAEMON_CONF=""
+
+# replace with
+DAEMON_CONF="/etc/honeypot/hostapd.conf"
+
+# in newer Raspian interface configuration is handled by dhcpcd by default and we need to tell it to ignore wlan0
+sudo nano /etc/dhcpcd.conf
+
+# past the following at the end of the file then hit control x and y to save and exit
+denyinterfaces wlan0
+
+# creat a static IP
+sudo nano /etc/network/interfaces
+
+allow-hotplug wlan0
+iface wlan0 inet static
+    address 192.168.1.1
+    netmask 255.255.255.0
+    network 192.168.1.0
+    broadcast 192.168.1.255
+#   wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+# configure hostapd
+sudo nano /etc/hostapd/hostapd.conf
+
+# interface
+interface=wlan0
+
+# Set the driver
+driver=rt1871xdrv
+
+# Name of the network
+ssid=Test
+
+# Use the 2.4GHz band
+hw_mode=g
+
+# Use channel 6
+channel=6
+
+# Accept all MAC addresses
+macaddr_acl=0
+
+# Use WPA authentication
+auth_algs=1
+
+# Set to 1 to hide the broadcast name
+ignore_broadcast_ssid=0
+
+# Use WPA2
+wpa=2
+
+# The passphrase
+wpa_passphrase=123456789
+
+# Use a pre-shared key
+wpa_key_mgmt=WPA-PSK
+
+# Use AES, instead of TKIP
+rsn_pairwise=CCMP
+
+# Enable 802.11n
+ieee80211n=1
+
+# Enable WMM
+wmm_enabled=1
+
+# check it works
+sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf
+
+
+
+https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.reddit.com/r/raspberry_pi/comments/5i9r2u/help_multiaccess_point_config_using_hostapd/
+
+It looks like hostapd can be called with multiple config files. This is the proper way to do things rather than to call hostapd multiple times (which you can also do).
+This makes things super simple. Just edit your /etc/default/hostapd and change DAEMON_CONF to include both configs:
+DAEMON_CONF="/etc/hostapd/hostapd.conf /etc/hostapd/hostapd2.conf"
+
+
+I followed this your advice, made another hostapd config file named "hostapd-wlan1.conf".
+I made sure all mappings for the config were updated, DAEMON_CONF= /etc/hostapd/hostapd.conf /etc/hostapd/hostapd-wlan1.conf
+Also,I updated the mapping of the config file in /etc/init.d/hostapd to include the hostapd-wlan1.conf
+Pretty straightforward config for the dchp server, I used 2 subnets, and 2 interfaces (/etc/default (or init.d?)/isc-dchp-server)
+After all of that it was working randomly, after a reboot it works, sometimes it doesnt. What happened was wlan0 and wlan1 kept swapping dongles, follow this:
+https://m.reddit.com/r/raspberry_pi/comments/2lf8eg/two_wifi_adapters_attached_to_my_pi_they_keep/
+
+
+
+
+I'm not able to test this presently but I found that this seems to be related to the version of udev in use on whatever distro you're using and how device assignment rules are set up. I found a post suggesting the following:
+edit /lib/udev/rules.d/75-persistent-net-generator.rules
+replace: KERNEL!="ath|msh|ra|sta|ctc|lcs|hsi*", \ GOTO="persistent_net_generator_end"
+with: KERNEL!="eth[0-9]|ath|wlan[0-9]|msh|ra|sta|ctc|lcs|hsi*", \ GOTO="persistent_net_generator_end"
+Shutdown your Pi, remove the USB dongle you intend to call wlan1. Boot up and plug the wlan1 dongle back in.
+/etc/udev/rules.d/70-persistent-net.rules should be created with definitions for persistent rules for wlan0 and wlan1. If you find the interfaces are swapped you should be able to edit the rules in the file to your liking.
+
+
+
+
+
+
+
+
+
+
+
+

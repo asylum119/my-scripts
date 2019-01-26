@@ -1,0 +1,292 @@
+<html>
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Dynamic Wi-Fi Honeypot 4RPI/3">
+  <meta name="keywords" content="Raspberry PI, Wi-Fi Honeypot, HostAPD">
+  <meta name="author" content="Brett Peters">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<style>body {background-color: antiquewhite;} h1,h2,h3,h4,h5 {font-family: serif; color: sienna;;} a {color: goldenrod; font-family: monospace; font-weight: bold; font-size: 13px; text-decoration: none;} pre {color: gray; border: 1px solid gray; padding: 10px; background-color: whitesmoke; margin-bottom: 40px;} .notes p {font-size: 14px;}</style>
+
+<title>Dynamic Wi-Fi Honeypot 4RPI/3</title>
+
+<center><h1>Dynamic Wi-Fi Honeypot 4RPI/3</h1></center>
+
+<br>
+
+<p>This is the project documentation to build a <strong>Dynamic Wi-Fi Honeypot</strong> for the <strong>Raspberry PI 3</strong> and will create a single Wi-Fi access point that dynamically updates the broadcast name on connection attempt and logs the mac address of the devices trying to connect to the fake access point.</p>
+
+</p>Four honeypot scripts are supplied and each script has some user options for quick customization so open the files up and read the comments if you feel the need to customize. Each script has a different approach as to what a dynamic Wi-Fi honeypot can do, hopefully one will suit or spark a project idea.</p>
+
+<p>Not too much involved here as we just need to install dnsmasq to output mac addresses to the sysylog and then install hostapd to look after broadcasting the access point, only a few conf files need editing. The dynamic part is done with shell scripts and are commented fairly well.</p>
+
+<p>Designed for a RPI3 with onboard Wi-Fi but you could always add RPI2 USB Dongle driver details in each script under hostapd, also being a POC the code could be improved and expanded. I stopped short because I did not have 4 Wi-Fi Dongles to expand the honeypot and hostapd was not responding when sending a SIGHUP signal for reloading config on the fly despite /etc/init.d/hostapd suggesting HUP support, hostapd needs more investigation.</p>
+
+<p>A bit hard to condense an explanation so if you want to broadcast a Wi-Fi Hacking Challenge Script that randomizes the SSID responses, broadcast mac address, the channel number as well as log mac addresses of devices trying to connect then this may be worth your time to read on.</p>
+
+<p> * Because the RPI hardware does not keep time by design and this project not having an outbound connection to remotely correct the time, the syslog gets cleared out to detect new connection attempts instead of using time stamps, something to keep in mind if not using on a single project RPI CPU.</p>
+
+<br>
+
+<br>
+
+<h2>Install Raspbian LITE</h2>
+
+<p>The documentation will cover everything in detail but this part is well documented on the Raspberry PI website.</p>
+
+<br>
+
+<br>
+
+<h3><u>Boot The Raspberry</u></h3>
+
+<p>You will need to remember the default Raspbian user name and password for the first boot</p>
+
+<ul>
+  <li>Username:	pi</li>
+  <li>Password:	raspberry</li>
+</ul>
+
+<br>
+
+<br>
+
+<h3><u>Connect to Wi-fi</u></h3>
+
+<p>Skip this step if not using Wi-Fi to install the needed packages. This is for those that may benefit from not having to move the RPI (monitor and all) to a network tether point. If your keyboard does not yet support special characters but you need to type this out then you need to run raspi-config and set up the keyboard (see the next step for details).</p>
+
+<p>backup the interfaces file before editing</p>
+<pre>
+cp /etc/network/interfaces /etc/network/interfaces.orig
+</pre>
+
+<p>Open the interfaces file</p>
+<pre>
+sudo nano /etc/network/interfaces
+</pre>
+
+<p>Enter the following but remember to edit the Wi-Fi name and password before saving</p>
+
+<pre>ctrl_interface=DIR=var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+# Connection to Home Wi-Fi
+network={
+ssid="enter Wi-Fi Name Here"
+# scan_ssid=1					# remove the '#' from the start of this line if Wi-Fi is hidden
+psk"enter Wi-Fi Password Here"
+key_mgmt=WPA-PSK				# assumes you are using WPA2 Wi-Fi security
+}</pre>
+
+<p>Save and exit</p>
+
+<br>
+
+<br>
+
+<p>backup the wpa_supplicant.conf file before editing</p>
+<pre>
+sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.orig
+</pre>
+
+<p>Open the wp-supplicant.conf file</p>
+<pre>
+suddo nano /etc/wpa_supplicant/wpa_supplicant.conf
+</pre>
+
+<p>Enter the following at the end of the file but remember to edit the Wi-Fi name and password before saving</p>
+<pre>
+network={
+ssid="SSID Name"
+psk="SSID Password"
+key_mgmt=WPA-PSK
+}
+</pre>
+
+<p>Save and exit</p>
+
+<br>
+
+<br>
+
+<p>Reboot to activate the changes</p>
+<pre>
+sudo reboot
+</pre>
+
+<br>
+
+<br>
+
+<h3><u>Raspberry Configuration</u></h3>
+
+<p>The single most important configuration is to enable Console Autologin so that the honeypot will work on boot, do not enable GUI boot. The second most important is keyboard configuration so that all special characters work as expected when editing the files. Anything else is optional.</p>
+<pre>
+sudo raspi-config
+</pre>
+
+<ul>
+  <li>Change the password to whatever you will remember (optional)</li>
+  <li>Set up your keyboard and make sure special characters work (Localization Options)</li>
+  <li>Set auto login to console (Boot Options --> Desktop / CLI --> Console Autologin)</li>
+  <li>Update then reboot (optional)</li>
+</ul>
+
+<br>
+
+<br>
+
+<h3><u>Install Needed Packages</u></h3>
+
+<p>Update the package list and upgrade Raspian</p>
+
+<pre>
+sudo apt-get update && sudo apt-get -y upgrade
+</pre>
+
+<br>
+
+<p>Install the needed packages</p>
+
+<pre>sudo apt-get -y install dnsmasq hostapd</pre>
+
+<br>
+
+<br>
+
+<h3><u>Configure HostAPD</u></h3>
+
+<p>backup the hostapd file before editing</p>
+
+<pre>
+cp /etc/default/hostapd /etc/default/hostapd.orig
+</pre>
+
+<p>Open the hostapd conf file</p>
+
+<pre>
+sudo nano /etc/default/hostapd
+</pre>
+
+<p>Find</p>
+<pre>
+DAEMON_CONF=""
+</pre>
+
+<p>Replace with</p>
+<pre>
+DAEMON_CONF="/etc/honeypot/config/hostapd.conf"
+</pre>
+
+
+<br>
+
+<p>Save and exit</p>
+
+<br>
+
+<br>
+
+<h3><u>Copy Files To The Raspberry</u></h3>
+
+<p>copy the files to a USB stick and plug the stick into the Raspberry</p>
+
+<pre>
+sudo mkdir /media/usb
+sudo chown -R pi /media/usb
+sudo mount /dev/sda1 /media/usb
+sudo cp -r /media/usb/honeypot /etc/honeypot
+suddo chmod -R 777 /etc/honeypot
+sudo umount /dev/sda1
+sudo rm -r /media/usb
+</pre>
+
+
+<br>
+
+<br>
+
+<h3><u>Load Honeypot On Boot</u></h3>
+
+<p>Open  rc.local</p>
+<pre>sudo nano /etc/rc.local</pre>
+
+<p>Add the following on a new line prior to the "exit 0" line</p>
+<pre>
+# Allow the boot process to finish
+sleep 200
+
+# Load the Dynamic Wi-Fi Honeypot Script
+sudo sh /etc/honeypot/./autorun.sh
+</pre>
+
+<p>Save and exit</p>
+
+<br>
+
+<br>
+
+<h3><u>Undo Wi-Fi Setup</u></h3>
+
+<p>Skip this step if you did not set up Wi-Fi for the install process. If you set up Wi-Fi for the install process then we are going to undo it because the scripts will be using hostapd to broadcast the honeypot access point from this point onward.</p>
+
+<p>Reinstate the original interfaces file</p>
+<pre>
+cp /etc/network/interfaces.orig /etc/network/interfaces
+</pre>
+
+<p>Remove the backup file</p>
+<pre>
+sudo rm /etc/network/interfaces.orig
+</pre>
+
+<p>Reinstate the original wpa_supplicant.conf file</p>
+<pre>
+sudo cp /etc/wpa_supplicant/wpa_supplicant.conf.orig /etc/wpa_supplicant/wpa_supplicant.conf
+</pre>
+
+<p>Remove the backup file</p>
+<pre>
+sudo rm /etc/wpa_supplicant/wpa_supplicant.conf.orig
+</pre>
+
+<br>
+
+<br>
+
+<h3><u>Finished</u></h3>
+
+<p>Read the note section below then unplug the USB and reboot the Raspberry.</p> 
+
+<p>By default the honeypot will load a random script on machine boot, have a play then set a single script to load by editing the /etc/honeypot/autorun.sh file, to stop the script from running and get the terminal back, boot the RPI with a USB plugged in.</p>
+
+<br>
+<br>
+<hr>
+<br>
+
+<h3 id="notes"><u>Notes</u></h3>
+
+<div class="notes">
+<p>Running an infinite loop script via rc.local as the honeypot scripts do locks the user out of the command prompt, each script has an exit trap set to exit the script and give the terminal back to the user. Reboot the raspberry with a USB plugged in to activate the exit trap on machine boot.</p>
+
+<p>Log files for detected mac addresses that have tried to connect are located inside the /etc/honeypot/log directory. These log "Files" can be removed to reset the MAC logging as the scripts will recreate the files. Do not delete any directories though. The /log/master-mac log contains the mac addresses collected from ALL the scripts and the /log/honeypot/devices-* logs are for the honeypot.sh script as this script uses SSID response escalation dependent on how many connection attempts a specific device makes and is a different approach to the other scripts.</p>
+
+<p>By default the honeypot will choose one of four scripts to run at random per each machine boot, each script has a system reboot time set for aprox 24hrs of run time which activates a script at random and also helps with keeping hostapd stable. To set a single script to load only then edit /etc/honeypot/autoload.sh by booting the Raspberry with a USB inserted and uncommenting the script you wish to load inside the autorun.sh file (sudo nano /etc/honeypot/autorun.sh).</p>
+
+<p> * Please note that I am not a coder, this project is one of my first attempts to build something I wanted at the time. It works on my end but there is no guarantee that it will work as expected on your end, it is advised to review the code prior to deployment as I may have made unintentionally and fundamental errors due to lack of knowledge.</p>
+
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+<center><a href="">Github - Dynamic Wi-Fi Honeypot 4RPI/3</a></center>
+
+
+</body>
+</html>

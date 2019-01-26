@@ -1,0 +1,43 @@
+Project:  Dynamic Wi-Fi Honeypot 4RPI3
+                 -  https://github.com/-------
+
+
+DESCRIPTION
+
+Use the RPI3 onboard Wi-Fi interface to create a single AP that scans the syslog for connection attempts, then when spotted dynamically change the SSID Name and logs the MAC trying to connect.
+
+Several honeypot script variations have been included, one script is selected at random via autorun.sh apon machine boot which can be overidden in the autorun.sh script settings to allow you to load a single specific honeypot script once you have decided which one you like best.
+
+Each honeypot script has some script settings for easy customization so make sure to open each one up and have a quick look 
+  
+by default this script randomly selects one to load on machine boot, boot is triggered from inside each supplied script after a user set amount of script loop passes. To load a single script only, follow
+  the comments located below
+
+
+#  NOTES
+#
+#  rc.local with an infinite loop will lock the user out
+#  of terminal so an exit trap has been set, boot the RPI
+#  with a USB plugged in to regain terminal functionality
+#
+#  Warning! '/var/log/syslog' gets cleared out due to the
+#  RPI not having an onboard clock, makes checking log entry
+#  times difficult. This may affect you if adding the Honeypot
+#  to a NON single project RPI or not using on a RPI
+#
+#  Honeypot has been designed for use with the RPI3s onboard
+#  Wi-Fi, RPI2 users with Wi-Fi dongles will need to add a
+#  driver path and possibly change the wlan0 value inside
+#  each of the Honeypot scripts to suit, each has comments
+#  which can be found by searching the scripts for 'RPI2'
+#
+#
+#  REQUIREMENTS
+#
+#  * RPI2
+#  * GNU/Linux
+#  * HostAPD
+#  * DNSmasq
+#  * Edit conf files (see readme file)
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - -
