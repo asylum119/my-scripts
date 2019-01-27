@@ -1,1 +1,1 @@
-Fake Wi-Fi AP with dynamic SSID updating on connection attempt (hammered this out quickly when next door deployed a pinaple attack), see "github.com/asylum119/my-scripts/tree/master/RPI%20Wi-Fi%20Honeypot/honeypot/script" for included script examples
+RPI Fake Wi-Fi AP with dynamic SSID updating on connection attempt (hammered this out quickly when next door deployed a pinaple attack), see "github.com/asylum119/my-scripts/tree/master/RPI%20Wi-Fi%20Honeypot/honeypot/script" for included script examples
