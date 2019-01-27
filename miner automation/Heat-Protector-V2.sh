@@ -674,6 +674,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... P. U... 1 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -698,6 +700,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 2 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -722,6 +726,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 3 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -746,6 +752,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 4 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -770,6 +778,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 5 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -794,6 +804,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 6 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -818,6 +830,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 7 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -842,6 +856,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... G. P. U... 8 has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -867,6 +883,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... C. P. U... has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
@@ -891,6 +909,8 @@ while true; do
       if [ "${sudoers,,}" = "true" ]; then
         if [ -f "/etc/festival.scm" ] && [ "${enable_speech,,}" = "true" ]; then echo "WARNING... A. I. O... has triggered a system shutdown... temperature is too high${user_suspend_time}" | festival --tts; fi
         sudo -S rtcwake -m disk -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
+      else
+        systemctl suspend
       fi
     fi
     # osd
