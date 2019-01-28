@@ -2,13 +2,14 @@
 
 # load on system boot | Brett Peters
 
-
-
-
+#
 # select what coin to mine on boot
-# - turtlecoin
-# - plenteum
-# - xcash
+#
+
+# - turtlecoin, plenteum, xcash, aeon
+# - citicash, graft, italocoin, solacecoin
+# - sumokoin, worktips, bbsCoin, elya
+# - iridium, niobio, stellite, xaria
 
 coin_to_mine="xcash"
 
@@ -100,22 +101,114 @@ cd '/home/brett/Desktop/xmrig scripts'
 if [ "$mine_this" = "turtlecoin" ]; then
   sleep 60
   gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
-  sleep 130
+  sleep 60
 fi
 
 # Plentium
 if [ "$mine_this" = "plenteum" ]; then
   sleep 60
-  gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
-  sleep 130
+ gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
+ sleep 60
 fi
 
-# Xcash
+# xcash
 if [ "$mine_this" = "xcash" ]; then
   sleep 60
   gnome-terminal -e "./xCash.sh" --geometry 95x26+0+999 &
-  sleep 130
+  sleep 60
 fi
+
+# aeon
+if [ "$mine_this" = "aeon" ]; then
+  sleep 60
+  gnome-terminal -e "./aeon.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# citicash
+if [ "$mine_this" = "citicash" ]; then
+  sleep 60
+  gnome-terminal -e "./CitiCash.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# graft
+if [ "$mine_this" = "graft" ]; then
+  sleep 60
+  gnome-terminal -e "./graft.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# italocoin
+if [ "$mine_this" = "italocoin" ]; then
+  sleep 60
+  gnome-terminal -e "./italocoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# solacecoin
+if [ "$mine_this" = "solacecoin" ]; then
+  sleep 60
+  gnome-terminal -e "./solacecoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# sumokoin
+if [ "$mine_this" = "sumokoin" ]; then
+  sleep 60
+  gnome-terminal -e "./sumokoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# worktips
+if [ "$mine_this" = "worktips" ]; then
+  sleep 60
+  gnome-terminal -e "./worktips.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# bbsCoin
+if [ "$mine_this" = "bbsCoin" ]; then
+  sleep 60
+  gnome-terminal -e "./BBSCoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# elya
+if [ "$mine_this" = "elya" ]; then
+  sleep 60
+  gnome-terminal -e "./elya.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# iridium
+if [ "$mine_this" = "iridium" ]; then
+  sleep 60
+  gnome-terminal -e "./iridium.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# niobio
+if [ "$mine_this" = "niobio" ]; then
+  sleep 60
+  gnome-terminal -e "./Niobio.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# stellite
+if [ "$mine_this" = "stellite" ]; then
+  sleep 60
+  gnome-terminal -e "./stellite.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# xaria
+if [ "$mine_this" = "xaria" ]; then
+  sleep 60
+  gnome-terminal -e "./xaria.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
 
 
 #
@@ -161,6 +254,97 @@ if [ "$mine_this" = "xcash" ]; then
   sleep 30
 fi
 
+# aeon
+if [ "$mine_this" = "aeon" ]; then
+  sleep 60
+  gnome-terminal -e "./aeon.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# citicash
+if [ "$mine_this" = "citicash" ]; then
+  sleep 60
+  gnome-terminal -e "./CitiCash.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# graft
+if [ "$mine_this" = "graft" ]; then
+  sleep 60
+  gnome-terminal -e "./graft.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# italocoin
+if [ "$mine_this" = "italocoin" ]; then
+  sleep 60
+  gnome-terminal -e "./italocoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# solacecoin
+if [ "$mine_this" = "solacecoin" ]; then
+  sleep 60
+  gnome-terminal -e "./solacecoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# sumokoin
+if [ "$mine_this" = "sumokoin" ]; then
+  sleep 60
+  gnome-terminal -e "./sumokoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# worktips
+if [ "$mine_this" = "worktips" ]; then
+  sleep 60
+  gnome-terminal -e "./worktips.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# bbsCoin
+if [ "$mine_this" = "bbsCoin" ]; then
+  sleep 60
+  gnome-terminal -e "./BBSCoin.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# elya
+if [ "$mine_this" = "elya" ]; then
+  sleep 60
+  gnome-terminal -e "./elya.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# iridium
+if [ "$mine_this" = "iridium" ]; then
+  sleep 60
+  gnome-terminal -e "./iridium.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# niobio
+if [ "$mine_this" = "niobio" ]; then
+  sleep 60
+  gnome-terminal -e "./Niobio.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# stellite
+if [ "$mine_this" = "stellite" ]; then
+  sleep 60
+  gnome-terminal -e "./stellite.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
+# xaria
+if [ "$mine_this" = "xaria" ]; then
+  sleep 60
+  gnome-terminal -e "./xaria.sh" --geometry 95x26+0+999 &
+  sleep 60
+fi
+
 
 #
 # SPLASH
@@ -170,4 +354,3 @@ fi
 cd ~
 gnome-terminal -e "./splash.sh"
 sleep 3
-
