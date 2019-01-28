@@ -2,7 +2,7 @@
 
 ## Introduction
 
-> RPI Fake Wi-Fi AP with dynamic updating SSID broadcast on connection attempt, MAC logging for connection attempts, random AP MAC broadcast and chanel broadcast number for limiting a single attack vector when broadcasting the hacker challeng SSID.
+> RPI Fake Wi-Fi AP with dynamic updating SSID broadcast on connection attempt, MAC logging for connection attempts, random AP MAC broadcast and chanel broadcast number for limiting a single attack vector when broadcasting the hacker challeng SSID. Wi-Fi hackers wont expect this one.
 
 Hammered this out quickly when next door deployed a pineapple attack, maybe someone else can improve.
 
