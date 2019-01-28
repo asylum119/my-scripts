@@ -1,4 +1,4 @@
-# RPI Wi-Fi Honeypot/
+# RPI Wi-Fi Honeypot
 
 ## Introduction
 
