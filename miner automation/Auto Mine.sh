@@ -2,6 +2,19 @@
 
 # load on system boot | Brett Peters
 
+
+
+
+# select what coin to mine on boot
+# - turtlecoin
+# - plenteum
+# - xcash
+
+coin_to_mine="xcash"
+
+
+
+
 ####
 #### WAIT FOR CONNECTION
 ####
@@ -12,7 +25,7 @@ if [ -f "/etc/festival.scm" ]; then
   sleep 5; echo "the system has been started... please wait while I set everything up... this will take a while..." | festival --tts
 fi
 
-# check we have a connection before continuing
+# check connection
 while true; do
 ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` > /dev/null && connection_test="pass" || connection_test="fail"
 # we don't have a connection
@@ -20,7 +33,7 @@ if [ $connection_test = "fail" ] && [ -f "/etc/festival.scm" ]; then
   echo "Waiting on connection..." | festival --tts
   sleep 60
 fi
-# we have a connection so let the script continue
+# have connection
 if [ $connection_test = "pass" ]; then
   break
 fi
@@ -68,6 +81,10 @@ fi
 ####
 
 
+# make sure the user var has no caps 
+mine_this=$(echo "$coin_to_mine" | tr '[:upper:]' '[:lower:]')
+
+
 #
 #  CPU MINER
 #
@@ -76,26 +93,41 @@ fi
 if [ -f "/etc/festival.scm" ]; then
   echo "now loading the CPU miner..." | festival --tts
 fi
+
 cd '/home/brett/Desktop/xmrig scripts'
 
 # Turtlecoin
-#  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
+if [ "$mine_this" = "turtlecoin" ]; then
+  sleep 60
+  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
+  sleep 130
+fi
 
-  # Plentium
-    gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
+# Plentium
+if [ "$mine_this" = "plenteum" ]; then
+  sleep 60
+  gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
+  sleep 130
+fi
 
-sleep 130
+# Xcash
+if [ "$mine_this" = "xcash" ]; then
+  sleep 60
+  gnome-terminal -e "./xCash.sh" --geometry 95x26+0+999 &
+  sleep 130
+fi
 
 
 #
 #  HEAT PROTECTION
 #
 
-# start the heat protector custom script in new terminal and position the window (top left)
-#! permissions added to "/etc/sudoers.d/brett" so load with root (sudo /path/to/script.sh)
 if [ -f "/etc/festival.scm" ]; then
   echo "now loading hardware protection..." | festival --tts
 fi
+
+# start the heat protector custom script in new terminal and position the window (top left)
+#! permissions added to "/etc/sudoers.d/brett" so load with root (sudo /path/to/script.sh)
 gnome-terminal -e "sudo /home/brett/Desktop/Heat-Protector-V2.sh" --geometry 73x31+0+0 &
 sleep 20
 
@@ -108,15 +140,26 @@ sleep 20
 if [ -f "/etc/festival.scm" ]; then
   echo "now loading the GPU miner..." | festival --tts
 fi
+
 cd '/home/brett/Desktop/xmrig-amd scripts'
 
 # Turtlecoin
-# gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+999+0 &
+if [ "$mine_this" = "turtlecoin" ]; then
+  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+999+0 &
+  sleep 30
+fi
 
-  # Plentium
-    gnome-terminal -e "./plenteum.sh" --geometry 95x26+999+0 &
+# Plentium
+if [ "$mine_this" = "plenteum" ]; then
+  gnome-terminal -e "./plenteum.sh" --geometry 95x26+999+0 &
+  sleep 30
+fi
 
-sleep 10
+# Xcash
+if [ "$mine_this" = "xcash" ]; then
+  gnome-terminal -e "./xCash.sh" --geometry 95x26+999+0 &
+  sleep 30
+fi
 
 
 #
@@ -127,5 +170,4 @@ sleep 10
 cd ~
 gnome-terminal -e "./splash.sh"
 sleep 3
-
 
