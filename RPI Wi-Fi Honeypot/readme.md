@@ -4,7 +4,7 @@
 
 > RPI Fake Wi-Fi AP with dynamic updating SSID broadcast on connection attempt, MAC logging for connection attempts, random AP MAC broadcast and chanel broadcast number for limiting a single point of attack.
 
-If you have a RPI and want to broadcast Wi-Fi and haggle a hacker then this might be for you.
+> If you have a RPI and want to broadcast Wi-Fi and haggle a hacker then this might be for you.
 
 
 Hammered this out quickly when next door deployed a pineapple attack, maybe someone else can improve.
