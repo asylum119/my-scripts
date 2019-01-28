@@ -43,7 +43,7 @@ if [ ! -f "XMRig Upgrade.log" ]; then
   if [ -f "/etc/festival.scm" ]; then
     echo "checking for new CPU miner software..." | festival --tts
   fi
-  "./upgrade xmrig.sh"
+  sudo "./upgrade xmrig.sh"
 else
   if [ -f "/etc/festival.scm" ]; then
     echo "CPU miner software not upgraded... the donate code has changed... please manually edit the sed command in the upgrade script and then delete the log file located on the desktop..." | festival --tts
@@ -55,7 +55,7 @@ if [ ! -f "XMRig-amd Upgrade.log" ]; then
  if [ -f "/etc/festival.scm" ]; then
    echo "checking for new GPU miner software..." | festival --tts
  fi
-  "./upgrade xmrig-amd.sh"
+  sudo "./upgrade xmrig-amd.sh"
 else
   if [ -f "/etc/festival.scm" ]; then
     echo "GPU miner software was not upgraded... the donate code has changed... please manually edit the sed command in the upgrade script and then delete the log file located on the desktop..." | festival --tts
