@@ -113,6 +113,7 @@ cd '/home/brett/Desktop/xmrig scripts'
 # Turtlecoin
 if [ "$mine_this" = "turtlecoin" ]; then
   sleep 60
+#! xmrig doesn't like loading cyptonight-turtle algo using this method (stoopid low hash rate), other algo is fine
 #  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
   "./turtlecoin.sh" &
   sleep 60
@@ -121,6 +122,7 @@ fi
 # Plentium
 if [ "$mine_this" = "plenteum" ]; then
  sleep 60
+#! xmrig doesn't like loading cyptonight-turtle algo using this method (stoopid low hash rate), other algo is fine
 # gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
  "./plenteum.sh" &
  sleep 60
