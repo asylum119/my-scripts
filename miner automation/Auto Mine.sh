@@ -6,12 +6,10 @@
 # select what coin to mine on boot
 #
 
-# - turtlecoin, plenteum, xcash, aeon
-# - citicash, graft, italocoin, solacecoin
-# - sumokoin, worktips, bbsCoin, elya
-# - iridium, niobio, stellite, xaria
+# - turtlecoin
+# - plenteum
 
-coin_to_mine="xcash"
+coin_to_mine="turtlecoin"
 
 
 
@@ -76,13 +74,28 @@ else
   fi
 fi
 
+# upgrade xmr-stak
+if [ ! -f "XMR-STAK Upgrade.log" ]; then
+ if [ -f "/etc/festival.scm" ]; then
+   echo "checking for new GPU miner software..." | festival --tts
+ fi
+  sudo "./upgrade xmrig-stak.sh"
+else
+  if [ -f "/etc/festival.scm" ]; then
+    echo "Duel miner software was not upgraded... the donate code has changed... please manually edit the sed command in the upgrade script and then delete the log file located on the desktop..." | festival --tts
+  fi
+fi
+
+# testing longer sleep before loading the CPU miner (has been running at lower than 1/4 of the expected hash rate on cryptonight-turtle)
+sleep 400
+
 
 ####
 #### LOAD SCRIPTS
 ####
 
 
-# make sure the user var has no caps 
+# make sure the user var has no caps
 mine_this=$(echo "$coin_to_mine" | tr '[:upper:]' '[:lower:]')
 
 
@@ -100,114 +113,22 @@ cd '/home/brett/Desktop/xmrig scripts'
 # Turtlecoin
 if [ "$mine_this" = "turtlecoin" ]; then
   sleep 60
-  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
+#  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+0+999 &
+  "./turtlecoin.sh" &
   sleep 60
 fi
 
 # Plentium
 if [ "$mine_this" = "plenteum" ]; then
-  sleep 60
- gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
+ sleep 60
+# gnome-terminal -e "./plenteum.sh" --geometry 95x26+0+999 &
+ "./plenteum.sh" &
  sleep 60
 fi
 
-# xcash
-if [ "$mine_this" = "xcash" ]; then
-  sleep 60
-  gnome-terminal -e "./xCash.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
 
-# aeon
-if [ "$mine_this" = "aeon" ]; then
-  sleep 60
-  gnome-terminal -e "./aeon.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# citicash
-if [ "$mine_this" = "citicash" ]; then
-  sleep 60
-  gnome-terminal -e "./CitiCash.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# graft
-if [ "$mine_this" = "graft" ]; then
-  sleep 60
-  gnome-terminal -e "./graft.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# italocoin
-if [ "$mine_this" = "italocoin" ]; then
-  sleep 60
-  gnome-terminal -e "./italocoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# solacecoin
-if [ "$mine_this" = "solacecoin" ]; then
-  sleep 60
-  gnome-terminal -e "./solacecoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# sumokoin
-if [ "$mine_this" = "sumokoin" ]; then
-  sleep 60
-  gnome-terminal -e "./sumokoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# worktips
-if [ "$mine_this" = "worktips" ]; then
-  sleep 60
-  gnome-terminal -e "./worktips.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# bbsCoin
-if [ "$mine_this" = "bbsCoin" ]; then
-  sleep 60
-  gnome-terminal -e "./BBSCoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# elya
-if [ "$mine_this" = "elya" ]; then
-  sleep 60
-  gnome-terminal -e "./elya.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# iridium
-if [ "$mine_this" = "iridium" ]; then
-  sleep 60
-  gnome-terminal -e "./iridium.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# niobio
-if [ "$mine_this" = "niobio" ]; then
-  sleep 60
-  gnome-terminal -e "./Niobio.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# stellite
-if [ "$mine_this" = "stellite" ]; then
-  sleep 60
-  gnome-terminal -e "./stellite.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# xaria
-if [ "$mine_this" = "xaria" ]; then
-  sleep 60
-  gnome-terminal -e "./xaria.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
+# testing longer sleep after loading the CPU miner (has been running at lower than 1/4 of the expected hash rate on cryptonight-turtle)
+sleep 400
 
 
 
@@ -238,112 +159,18 @@ cd '/home/brett/Desktop/xmrig-amd scripts'
 
 # Turtlecoin
 if [ "$mine_this" = "turtlecoin" ]; then
-  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+999+0 &
+#  gnome-terminal -e "./turtlecoin.sh" --geometry 95x26+999+0 &
+  "./turtlecoin.sh" &
   sleep 30
 fi
 
 # Plentium
 if [ "$mine_this" = "plenteum" ]; then
-  gnome-terminal -e "./plenteum.sh" --geometry 95x26+999+0 &
+#  gnome-terminal -e "./plenteum.sh" --geometry 95x26+999+0 &
+  "./plenteum.sh" &
   sleep 30
 fi
 
-# Xcash
-if [ "$mine_this" = "xcash" ]; then
-  gnome-terminal -e "./xCash.sh" --geometry 95x26+999+0 &
-  sleep 30
-fi
-
-# aeon
-if [ "$mine_this" = "aeon" ]; then
-  sleep 60
-  gnome-terminal -e "./aeon.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# citicash
-if [ "$mine_this" = "citicash" ]; then
-  sleep 60
-  gnome-terminal -e "./CitiCash.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# graft
-if [ "$mine_this" = "graft" ]; then
-  sleep 60
-  gnome-terminal -e "./graft.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# italocoin
-if [ "$mine_this" = "italocoin" ]; then
-  sleep 60
-  gnome-terminal -e "./italocoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# solacecoin
-if [ "$mine_this" = "solacecoin" ]; then
-  sleep 60
-  gnome-terminal -e "./solacecoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# sumokoin
-if [ "$mine_this" = "sumokoin" ]; then
-  sleep 60
-  gnome-terminal -e "./sumokoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# worktips
-if [ "$mine_this" = "worktips" ]; then
-  sleep 60
-  gnome-terminal -e "./worktips.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# bbsCoin
-if [ "$mine_this" = "bbsCoin" ]; then
-  sleep 60
-  gnome-terminal -e "./BBSCoin.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# elya
-if [ "$mine_this" = "elya" ]; then
-  sleep 60
-  gnome-terminal -e "./elya.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# iridium
-if [ "$mine_this" = "iridium" ]; then
-  sleep 60
-  gnome-terminal -e "./iridium.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# niobio
-if [ "$mine_this" = "niobio" ]; then
-  sleep 60
-  gnome-terminal -e "./Niobio.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# stellite
-if [ "$mine_this" = "stellite" ]; then
-  sleep 60
-  gnome-terminal -e "./stellite.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
-
-# xaria
-if [ "$mine_this" = "xaria" ]; then
-  sleep 60
-  gnome-terminal -e "./xaria.sh" --geometry 95x26+0+999 &
-  sleep 60
-fi
 
 
 #
@@ -353,4 +180,4 @@ fi
 # load the splash screen
 cd ~
 gnome-terminal -e "./splash.sh"
-sleep 3
+sleep 5
