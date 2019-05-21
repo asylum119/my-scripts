@@ -39,7 +39,8 @@ fi
 echo "Upgrading checkpoints file, please wait
 
 "
-wget -P "blockchain/turtlecoin/" "https://github.com/turtlecoin/checkpoints/raw/master/checkpoints.csv"
+# download from IPFS gateway (see http://ns1.turtlecoin.lol/ipfs)
+wget "http://ns1.turtlecoin.lol/ipfs/QmYbHVXNJwLQHTptqoj5eX7wQi2hdMfxN6twCSrs1o2QwC" -O checkpoints.csv
 echo "Checkpoints now updated"
 sleep 3
 clear
