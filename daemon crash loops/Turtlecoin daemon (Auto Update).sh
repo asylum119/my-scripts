@@ -1,7 +1,18 @@
 #!/bin/sh
 
-# daemon update, load and crash loop | Brett Peters
+# TurtleCoin Auto Upgrade (GNU/Linux Cli)
+# - Upgrade TurtleCoin Software
+# - Update TurtleCoin checkpoints file
+# - load the TurtleCoin Daemon in a crash loop
+#
+# NOTE:
+# - file structure is specific to my needs, you may want to adapt the code to suit
+# - if loading constantly it may be a good idea to add a true/false variable for the checkpoints download
+#
+# Brett Peters
+#
 
+ 
 # title
 clear; PROMPT_COMMAND= ;echo "\033]0;Crypto Coin TurtleCoin - Daemon\a"; clear
 
@@ -30,6 +41,11 @@ if [ -f 'crashd.log' ]; then
   rm 'crashd.log'
 fi
 
+# remove the old wget log file
+if [ -f 'wget-log' ]; then
+  rm 'wget-log'
+fi
+
 # delete the old checkpoints file
 if [ -f 'blockchain/turtlecoin/checkpoints.csv' ]; then
   rm 'blockchain/turtlecoin/checkpoints.csv' 
@@ -39,8 +55,9 @@ fi
 echo "Upgrading checkpoints file, please wait
 
 "
-# download from IPFS gateway (see http://ns1.turtlecoin.lol/ipfs)
-wget "http://ns1.turtlecoin.lol/ipfs/QmYbHVXNJwLQHTptqoj5eX7wQi2hdMfxN6twCSrs1o2QwC" -O checkpoints.csv
+# grab checkpoints file from IPFS gateway
+wget "http://ns1.turtlecoin.lol/ipfs/QmYbHVXNJwLQHTptqoj5eX7wQi2hdMfxN6twCSrs1o2QwC" -O "blockchain/turtlecoin/checkpoints.csv"
+
 echo "Checkpoints now updated"
 sleep 3
 clear
@@ -99,4 +116,5 @@ while true; do
   clear
   'wallet software/turtlecoin/TurtleCoind' --data-dir='blockchain/turtlecoin' --log-file 'turtlecoind.log' --hide-my-port --load-checkpoints 'blockchain/turtlecoin/checkpoints.csv' 
   daemon_crash=$((daemon_crash+1)) 
+  sleep 5
 done
