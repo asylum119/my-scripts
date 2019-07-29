@@ -3,20 +3,21 @@
 # WARNING! This script is for advanced users and released for peer review only. Your System, Your Hardware... Your responsibility.
 #
 # This script is loaded by the automated mining script that is loaded on boot
-# and dynamically changes GPU fan speeds % to suit individual GPU temperature
+# and dynamically changes GPU fan speeds % to suit individual GPU temperature.
+#
+# see the "miner setup" file and make sure that both Auto-Mine.sh & Heat-Protector.sh
+# are added to the sudoers file, this script needs sudo for rocm-smi & rtcwake
 #
 # The system will suspend if CPU, AIO or GPU temp gets to high then resume the
 # system and continue previous operations when temps are again reasonable
 #
 # GPU fan speeds are controlled via the ROCm SMI Tool, sensors commands may
-# need editing for a different machine / Ubuntu Version
+# need editing for a different machine and or sensors package Version
 #
-# Operating System: Ubuntu 18
+# Operating System: Ubuntu 18 Bionic
 # DEPENDENCIES: lm-sensors, ROCm Driver / ROCm SMI
 # CPU: Threadripper - AMD
 # GPU: RX580 8G - AMD
-#
-# TODO: add ROCm SMI GPU Overclocking support
 #
 # Brett Peters, asylum119 - github.com/asylum119
 #
@@ -26,7 +27,7 @@
 # SET THE TEMPERATURE LIMITS (°C) FOR CPU, GPU AND AIO
 # - the computer should suspend when a temp setting is reached.
 # ! WARNING: these values should be a safe operating temp to limit critical hardware failure.
-#
+# - monitor remotly via SSH "while true; do clear; sensors | grep Tdie; sensors | grep edge; sleep 60; done"
 
   # MAX GPU Temp
   shutdown_GPU_temp="75"
@@ -44,7 +45,7 @@
 #
 # SET THE GPU NAMES
 # - in terminal type "sensors" and enter all of the GPU names you find here and leave the rest blank
-#
+# - if using older sensors package then "edge" in this code will need changing to "temp1"
 
   # GPU Names
   GPU_name_01="amdgpu-pci-4100"
@@ -83,7 +84,8 @@
     suspend_time="14400" # 1Hr "3600", 2Hr "7200", 3Hr "10800", 4Hr "14400"
 
 
-    # DEPRECIATED: update for ROCm-SMI
+    # DEPRECIATED:
+    # - TODO: update for ROCm-SMI
     # SET THE GPU FREQUENCY IN MHz
     # - WARNING! only tested on RX580s
     # - this is good for underclocking AMD RX GPUs using the AMD-GPU-PRO Driver
@@ -95,7 +97,8 @@
 
 
 
-    # DEPRECIATED: update for ROCm-SMI
+    # DEPRECIATED:
+    # - TODO: update for ROCm-SMI
     # SET THE GPU MEMCLOCK FREQUENCY IN MHz
     # - WARNING! only tested on RX580s
     # - this is good for underclocking AMD RX GPUs using the AMD-GPU-PRO Driver
@@ -171,9 +174,9 @@ while true; do
   # GPU 01
   if [[ ! -z "${GPU_name_01}" ]]; then
     # stats
-    GPU_temp_01=$(sensors | sed -e "6,/${GPU_name_01}/d" | grep -m 1 temp | awk '{print $2}' | cut -c 2-3)
-    GPU_fan_speed_01=$(sensors | sed -e "5,/${GPU_name_02}/d" | grep -m 1 fan | awk '{print $2}')
-    # suspend and set cool down time after wake so we don't read a false negative temp and prematurely shut down again
+    GPU_temp_01=$(sensors | sed -e "6,/${GPU_name_01}/d" | grep -m 1 edge | awk '{print $2}' | cut -c 2-3)
+    GPU_fan_speed_01=$(sensors | sed -e "5,/${GPU_name_01}/d" | grep -m 1 fan | awk '{print $2}')
+    # suspend and set cool down time after wake
     if [[ "$GPU_temp_01" -ge "$shutdown_GPU_temp" ]]; then
       sudo -S /usr/sbin/rtcwake -m mem -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
     fi
@@ -182,9 +185,9 @@ while true; do
   # GPU 02
   if [[ ! -z "${GPU_name_02}" ]]; then
     # stats
-    GPU_temp_02=$(sensors | sed -e "6,/${GPU_name_02}/d" | grep -m 1 temp | awk '{print $2}' | cut -c 2-3)
+    GPU_temp_02=$(sensors | sed -e "6,/${GPU_name_02}/d" | grep -m 1 edge | awk '{print $2}' | cut -c 2-3)
     GPU_fan_speed_02=$(sensors | sed -e "5,/${GPU_name_02}/d" | grep -m 1 fan | awk '{print $2}')
-    # suspend and set cool down time after wake so we don't read a false negative temp and prematurely shut down again
+    # suspend and set cool down time after wake
     if [[ "$GPU_temp_02" -ge "$shutdown_GPU_temp" ]]; then
       sudo -S /usr/sbin/rtcwake -m mem -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
     fi
@@ -194,9 +197,9 @@ while true; do
   # CPU
   if [[ ! -z "${CPU_name}" ]]; then
     # stats
-    CPU_temp=$(sensors | sed -e "1,/k10temp-pci-00c3/d" | grep -m 1 temp | awk '{print $2}' | cut -c 2-3)
-    CPU_high_temp=$(sensors | sed -e "1,/${CPU_name}/d" | grep -m 1 temp | awk '{print $5}' | cut -c 2-3)
-    # suspend and set cool down time after wake so we don't read a false negative temp and prematurely shut down again
+    CPU_temp=$(sensors | sed -e "1,/${CPU_name}/d" | grep -m 1 Tdie | awk '{print $2}' | cut -c 2-3)
+    CPU_high_temp=$(sensors | sed -e "1,/${CPU_name}/d" | grep -m 1 Tdie | awk '{print $5}' | cut -c 2-3)
+    # suspend and set cool down time after wake
     if [[ "$CPU_temp" -ge "$CPU_high_temp" ]]; then
       sudo -S /usr/sbin/rtcwake -m mem -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
     fi
@@ -207,7 +210,7 @@ while true; do
     # stats
     AIO_temp=$(sensors | sed -e "1,/${AIO_name}/d" | grep -m 1 Tdie | awk '{print $2}' | cut -c 2-3)
     AIO_high_temp=$(sensors | sed -e "1,/${AIO_name}/d" | grep -m 1 Tdie | awk '{print $5}' | cut -c 2-3)
-    # suspend and set cool down time after wake so we don't read a false negative temp and prematurely shut down again
+    # suspend and set cool down time after wake
     if [[ "$AIO_temp" -ge "$AIO_high_temp" ]]; then
       sudo -S /usr/sbin/rtcwake -m mem -s $suspend_time; sleep $wakeup_cool_time; was_shutdown="true"
     fi
@@ -352,18 +355,9 @@ while true; do
   fi
 
 
+# slow the loop down
 sleep 20
 
 
 # /loop
 done
-
-# script failure
-clear
-echo "The script failed"
-touch "failed"
-sleep 5
-exit 0
-
-
-
