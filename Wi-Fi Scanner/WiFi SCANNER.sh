@@ -73,7 +73,10 @@ do
   fi
 
   # display on screen number of logged Wi-Fi networks
-  if [ "$new_count" -gt 0 ]; then
+  if [ "$new_count" = 1 ]; then
+    echo -e "\n${bold_txt}${magenta_txt}$((${new_count} -1)) Wi-Fi Network${reset_txt}"
+  fi
+  if [ "$new_count" -gt 1 ]; then
     echo -e "\n${bold_txt}${magenta_txt}$((${new_count} -1)) Wi-Fi Networks${reset_txt}"
   fi
 
