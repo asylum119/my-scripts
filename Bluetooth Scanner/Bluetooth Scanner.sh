@@ -75,7 +75,7 @@ do
     echo -e "\n${bold_txt}${magenta_txt}$((${new_count})) Bluetooth Device${reset_txt}"
   fi
   if [ "$new_count" -gt 1 ]; then
-    echo -e "\n${bold_txt}${magenta_txt}$((${new_count})) Bluetooth Device${reset_txt}"
+    echo -e "\n${bold_txt}${magenta_txt}$((${new_count})) Bluetooth Devices${reset_txt}"
   fi
 
   # slow the script down a bit
