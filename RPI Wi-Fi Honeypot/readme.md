@@ -3,7 +3,8 @@
 ## RPI Wi-Fi Hacker Honeypot 
 > simply deploy these example scripts to catch a Wi-Fi hacker attempting to hack your network, it logs their MAC address and more, it changes the Wi-Fi address to not only mock the hacker but proves that Wi-Fi script kiddies are out of their league when attempting to hack your Wi-Fi, and should stay away from your Wi-Fi network at all costs.
 >
-> Currently considering getting my hands on the latest RPI, to do a complete overhaul for current updated RPI GNU/Linux as well as new network protocals. not much interest, but me up at contactbrett@protonmail.com if tou want to see updates and improvements. @RaspberryPI Wi-Fi Honeypot
+> Currently considering getting my hands on the latest RPI, to do a complete overhaul for current updated RPI GNU/Linux as well as new network protocals. not much interest, hit me up at contactbrett@protonmail.com if t
+> you want to see updates and improvements for the latest Raspberry PI. @RaspberryPI Wi-Fi Honeypot
 >
 > ## RSPI Wi-Fi Honeypot
 > having fun with wanna be Wi-Fi hackers
