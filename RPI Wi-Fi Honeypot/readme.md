@@ -1,6 +1,12 @@
 # RPI Wi-Fi Honeypot
 
-## Introduction
+## RPI Wi-Fi Hacker Honeypot 
+> simply deploy these example scripts to catch a Wi-Fi hacker attempting to exit your network, it logs their MAC address and more, it changes the Wi-Fi address to not only mock the hacker but proves that Wi-Fi script kiddies a4e out of their league, and should stay away from your Wi-Fi network.
+>
+> ## RSPI Wi-Fi Honeypot
+> having fun with wanna be Wi-Fi hackers
+>
+> ## Introduction
 
 > RPI Fake Wi-Fi AP with dynamic updating SSID broadcast on connection attempt, MAC logging for connection attempts, random AP MAC broadcast and chanel broadcast number for limiting a single point of attack.
 
